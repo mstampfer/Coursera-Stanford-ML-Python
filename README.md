@@ -1,7 +1,7 @@
 # Coursera-Stanford-ML-Python
 Coursera/Stanford Machine Learning course assignments in python
 
-Assignments for Andrew Ng's Machine Learning course implemented in python. The code and results are structurally and numerically equivalent to the Matlab implementation from Coursera. Students can submit the assignments to the Coursera website by executing the submit.py script. The credentials will be saved to a file for subsequent submissions, e.g:
+Assignments for Andrew Ng's Machine Learning course implemented in python without solutions and is thus in line with the [Coursera code of Honor](https://www.coursera.org/about/terms/honorcode "Coursera Honor Code"). The code is structurally equivalent to the Matlab implementation from Coursera and the results can be numerically equivalent with the correct python implementation of the incomplete scripts. After completing each assignment, students can submit to the Coursera website for grading by executing the submit.py script. The credentials will be saved to a file for subsequent submissions, e.g:
 
 ```bash
 cd Coursera-Stanford-ML-Python/ex1
@@ -22,4 +22,4 @@ Password:
 ==                                   --------------------------------
 ==                                             |  10 / 100 |
 ```
-# Copy
+

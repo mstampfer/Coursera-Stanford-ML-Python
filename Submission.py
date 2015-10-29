@@ -67,8 +67,8 @@ class Submission():
 
         if os.path.isfile('token.txt'):
             os.remove('token.txt')
-        self.__login = raw_input('login (Email address): ')
-        self.__password = getpass('Password: ')
+        self.__login = raw_input('Login (email address): ')
+        self.__password = getpass('Token: ')
 
     def request(self, parts):
 

@@ -5,10 +5,10 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 
 
-class LoginScreen(BoxLayout):
+class MainScreen(BoxLayout):
 
     def __init__(self, **kwargs):
-        super(LoginScreen, self).__init__(**kwargs)
+        super(MainScreen, self).__init__(**kwargs)
         self.orientation='vertical'
         self.add_widget(self.titlebar())
         self.add_widget(self.maineditor())
@@ -49,7 +49,7 @@ class LoginScreen(BoxLayout):
 class MainApp(App):
 
     def build(self):
-        return LoginScreen()
+        return MainScreen()
     def on_pause(self):
     	return True
 

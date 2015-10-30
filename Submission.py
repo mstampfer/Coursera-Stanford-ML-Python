@@ -5,7 +5,6 @@ from collections import OrderedDict
 import numpy as np
 import os
 
-from getpass import getpass
 
 
 class Submission():
@@ -28,11 +27,17 @@ class Submission():
             parts[str(part_id)] = {'output': self.__output(part_id)}
 
         result, response = self.request(parts)
-
         response = loads(response)
+        try:
+            print response['errorMessage']
+            return
+        except:
+            pass
         print '=='
         print '== %43s | %9s | %-s' % ('Part Name', 'Score', 'Feedback')
         print '== %43s | %9s | %-s' % ('---------', '-----', '--------')
+        
+
         for part in parts:
             partFeedback = response['partFeedbacks'][part]
             partEvaluation = response['partEvaluations'][part]
@@ -40,6 +45,8 @@ class Submission():
             print '== %43s | %9s | %-s' % (self.__part_names[int(part)-1], score, partFeedback)
 
         evaluation = response['evaluation']
+    
+
         totalScore = '%d / %d' % (evaluation['score'], evaluation['maxScore'])
         print '==                                   --------------------------------'
         print '== %43s | %9s | %-s\n' % (' ', totalScore, ' ')
@@ -68,7 +75,7 @@ class Submission():
         if os.path.isfile('token.txt'):
             os.remove('token.txt')
         self.__login = raw_input('Login (email address): ')
-        self.__password = getpass('Token: ')
+        self.__password = raw_input('Token: ')
 
     def request(self, parts):
 

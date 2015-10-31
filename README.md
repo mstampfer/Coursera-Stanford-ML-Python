@@ -11,7 +11,7 @@ export PYTHONPATH=../
 python submit.py
 
 login (Email address): 
-Password: 
+token: 
 ==
 ==                                   Part Name |     Score | Feedback
 ==                                   --------- |     ----- | --------

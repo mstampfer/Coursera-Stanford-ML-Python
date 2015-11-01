@@ -15,12 +15,15 @@ class generate_elements():
 		pass
 		
 	def files(self,excercise):
-		path = '../'+excercise
-		filelist = [c[:-3] for c in os.listdir(path) if c.endswith('.py')]
-		# files=[]
-		# for ex in filelist:
-		# 	files.append(open(path+'/'+ex))
-		return filelist
+		path = 'res/'+excercise+'/filelist.txt'
+		#filelist = [c[:-3] for c in os.listdir(path) if c.endswith('.py')]
+		filehandler = open(path)
+		filelist=[]
+		while True:
+			try:
+				filelist.append(filehandler.next())
+			except Exception, e:
+				return filelist
 	def manual(self, excercise):
 		path = 'res/'+excercise+'/manual.md'
 		return pypandoc.convert(path,'rst')
@@ -45,10 +48,10 @@ class MainScreen(BoxLayout):
     def titlebar(self):
     	layout=BoxLayout(spacing=10)
     	layout.orientation='horizontal'
-    	submit = Button(text='Submit',size=(.5,.1))
+    	submit = Button(text='Submit')
     	submit.bind(on_press=self.submission)
-    	layout.add_widget(Label(text='Excercise1',size=(100,100)))
-    	layout.add_widget(Label(text='Title'))
+    	layout.add_widget(Label(text='Run Exercise'))
+    	layout.add_widget(Label(text=self.current_ex))
     	layout.add_widget(submit)
 
     	return layout
@@ -62,15 +65,17 @@ class MainScreen(BoxLayout):
     	layout=BoxLayout()
     	layout.orientation='horizontal'
     	man = self.element.manual(self.current_ex)
-    	code = self.element.readFile(self.current_ex,self.current_file)
-    	layout.add_widget(CodeInput(text=code.read()))
+    	codeFile = self.element.readFile(self.current_ex,self.current_file)
+    	code = CodeInput(text=codeFile.read())
+
+    	layout.add_widget(code)
     	layout.add_widget(RstDocument(text=man))
     	return layout
 
-    def filebar(self,excercise='ex1'):
+    def filebar(self):
     	layout=BoxLayout()
     	layout.orientation='horizontal'
-    	files = self.element.files(excercise)
+    	files = self.element.files(self.current_ex)
     	for f in files:
     		layout.add_widget(Label(text=f))
     	

@@ -9,6 +9,7 @@ from kivy.uix.rst import RstDocument
 from kivy.uix.textinput import TextInput
 #from kivy.metrics import dp
 from kivy.uix.spinner import Spinner
+from kivy.uix.splitter import Splitter
 
 
 class generate_elements():
@@ -52,11 +53,15 @@ class MainScreen(BoxLayout):
     def titlebar(self):
     	layout=BoxLayout(spacing=10)
     	layout.orientation='horizontal'
+
     	submit = Button(text='Submit',size_hint=(0.4,1))
+    	submit.bind(on_press=self.submission)
+    	
     	run = Button(text='Run',size_hint=(0.4,1))
     	run.bind(on_press=self.run)
-    	submit.bind(on_press=self.submission)
+
     	title = Label(text=self.current_ex,size_hint=(1,1),font_size='35sp')
+
     	layout.add_widget(run)
     	layout.add_widget(title)
     	layout.add_widget(submit)
@@ -72,12 +77,24 @@ class MainScreen(BoxLayout):
     
     def maineditor(self):
     	layout=BoxLayout()
-    	layout.orientation='horizontal'   
-    	#self.bind(self.current_ex=self.update_code) 	
+    	#reactive layout not working
+
+    	if self.width < self.height:
+    		layout.orientation='vertical'   
+    	else:
+    		layout.orientation='horizontal'
+    	#self.bind(self.current_ex=self.update_currentFile) 	
     	man = self.element.manual(self.current_ex)
     	codeFile = self.element.readFile(self.current_ex,self.current_file)
     	code = CodeInput(text=codeFile.read())
-    	layout.add_widget(code)
+    	splitter = Splitter()
+    	if layout.orientation == 'vertical':
+    		splitter.sizable_from='bottom'
+    	else:
+    		splitter.sizable_from='right'
+    	splitter.add_widget(code)
+    	layout.add_widget(splitter)
+
     	layout.add_widget(RstDocument(text=man))
     	return layout
 
@@ -91,13 +108,13 @@ class MainScreen(BoxLayout):
     	files = self.element.files(self.current_ex)
     	for f in files:
     		button = Button(text=f)
-    		button.bind(on_press=self.update_code)
+    		button.bind(on_press=self.update_currentFile)
     		layout.add_widget(button)
     	
     	return layout
 
     #Use bind to see how it works
-    def update_code(self,instance):
+    def update_currentFile(self,instance):
     	if instance.text.endswith('\n'):
     		instance.text=instance.text[:-1]
     	self.current_file = instance.text    	

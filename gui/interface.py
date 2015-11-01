@@ -62,7 +62,7 @@ class MainScreen(BoxLayout):
     	run = Button(text='Run',size_hint=(0.4,1))
     	run.bind(on_press=self.run)
 
-    	ex_dropdown = Spinner(text='Welcome',size_hint=(1,1))
+    	ex_dropdown = Spinner(text='Select Exercise',size_hint=(1,1))
     	ex_dropdown.values = os.listdir('./res/')
     	ex_dropdown.bind(text=self.updateExercise)
 
@@ -77,7 +77,6 @@ class MainScreen(BoxLayout):
 
     def updateExercise(self,spinner,text):
     	self.current_ex=text
-    	spinner.text=text
     	current_file = self.element.files(self.current_ex)[0]
     	if current_file.endswith('\n'):
     		current_file=current_file[:-1]
@@ -142,7 +141,7 @@ class MainScreen(BoxLayout):
     	print 'Current file changed to: ', self.current_file
 
 
-class MainApp(App):
+class CourseraApp(App):
 
     def build(self):
     	return MainScreen()
@@ -151,4 +150,4 @@ class MainApp(App):
 
 
 if __name__ == '__main__':
-    MainApp().run()
+    CourseraApp().run()

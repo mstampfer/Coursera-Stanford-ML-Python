@@ -42,10 +42,13 @@ class MainScreen(BoxLayout):
         self.current_ex = 'ex1'
         self.current_file = 'warmUpExercise.py'
         self.element=generate_elements()
-        self.add_widget(self.titlebar())
-        self.add_widget(self.maineditor())
-        self.add_widget(self.filebar())
+        self.draw_screen()
 
+    def draw_screen(self):
+    	self.add_widget(self.titlebar())
+    	self.add_widget(self.maineditor())
+    	self.add_widget(self.filebar())
+    	
     def titlebar(self):
     	layout=BoxLayout(spacing=10)
     	layout.orientation='horizontal'
@@ -98,7 +101,8 @@ class MainScreen(BoxLayout):
     	if instance.text.endswith('\n'):
     		instance.text=instance.text[:-1]
     	self.current_file = instance.text    	
-    	self.add_widget(self.maineditor())
+    	self.clear_widgets()
+    	self.draw_screen()
     	print 'Current file changed to: ', self.current_file
 
 

@@ -64,6 +64,7 @@ class MainScreen(BoxLayout):
 
     	ex_dropdown = Spinner(text='Welcome',size_hint=(1,1))
     	ex_dropdown.values = os.listdir('./res/')
+    	ex_dropdown.bind(text=self.updateExercise)
 
     	#title = Label(text=self.current_ex,size_hint=(1,1),font_size='35sp')
 
@@ -72,6 +73,20 @@ class MainScreen(BoxLayout):
     	layout.add_widget(submit)
 
     	return layout
+
+
+    def updateExercise(self,spinner,text):
+    	self.current_ex=text
+    	spinner.text=text
+    	current_file = self.element.files(self.current_ex)[0]
+    	if current_file.endswith('\n'):
+    		current_file=current_file[:-1]
+    	self.current_file= current_file
+    	self.clear_widgets()
+    	self.draw_screen()
+    	print('The spinner', spinner, 'have text', text)
+    	print 'Current file changed to: ', self.current_ex
+
 
 
     def run(self,instance):
@@ -105,8 +120,7 @@ class MainScreen(BoxLayout):
 
     
     	
-    def update_man():
-    	pass
+    
     def filebar(self):
     	layout=BoxLayout(padding='2sp',size_hint=(1,None),height='100sp')
     	layout.orientation='horizontal'

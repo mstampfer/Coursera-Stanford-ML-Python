@@ -49,14 +49,18 @@ class MainScreen(BoxLayout):
     	layout=BoxLayout(spacing=10)
     	layout.orientation='horizontal'
     	submit = Button(text='Submit')
+    	run = Button(text='Run')
+    	run.bind(on_press=self.run)
     	submit.bind(on_press=self.submission)
-    	layout.add_widget(Label(text='Run Exercise'))
+    	layout.add_widget(run)
     	layout.add_widget(Label(text=self.current_ex))
     	layout.add_widget(submit)
 
     	return layout
 
 
+    def run(self,instance):
+    	print('The button <%s> is being pressed' % instance.text)
     def submission(self,instance):
     	print('The button <%s> is being pressed' % instance.text)
 

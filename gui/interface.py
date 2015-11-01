@@ -7,7 +7,7 @@ from kivy.uix.codeinput import CodeInput
 from kivy.uix.label import Label
 from kivy.uix.rst import RstDocument
 from kivy.uix.textinput import TextInput
-
+from kivy.metrics import dp
 
 
 class generate_elements():
@@ -48,12 +48,13 @@ class MainScreen(BoxLayout):
     def titlebar(self):
     	layout=BoxLayout(spacing=10)
     	layout.orientation='horizontal'
-    	submit = Button(text='Submit')
-    	run = Button(text='Run')
+    	submit = Button(text='Submit',size_hint=(0.4,1))
+    	run = Button(text='Run',size_hint=(0.4,1))
     	run.bind(on_press=self.run)
     	submit.bind(on_press=self.submission)
+    	title = Label(text=self.current_ex,size_hint=(1,1),font_size='35sp')
     	layout.add_widget(run)
-    	layout.add_widget(Label(text=self.current_ex))
+    	layout.add_widget(title)
     	layout.add_widget(submit)
 
     	return layout
@@ -67,23 +68,36 @@ class MainScreen(BoxLayout):
     
     def maineditor(self):
     	layout=BoxLayout()
-    	layout.orientation='horizontal'
+    	layout.orientation='horizontal'    	
     	man = self.element.manual(self.current_ex)
     	codeFile = self.element.readFile(self.current_ex,self.current_file)
     	code = CodeInput(text=codeFile.read())
-
     	layout.add_widget(code)
     	layout.add_widget(RstDocument(text=man))
     	return layout
 
+    
+    	
+    def update_man():
+    	pass
     def filebar(self):
     	layout=BoxLayout()
     	layout.orientation='horizontal'
     	files = self.element.files(self.current_ex)
     	for f in files:
-    		layout.add_widget(Label(text=f))
+    		button = Button(text=f)
+    		button.bind(on_press=self.update_code)
+    		layout.add_widget(button)
     	
     	return layout
+
+    #Use bind to see how it works
+    def update_code(self,instance):
+    	if instance.text.endswith('\n'):
+    		instance.text=instance.text[:-1]
+    	self.current_file = instance.text
+    	self.add_widget(self.maineditor())
+    	print 'Current file changed to: ', self.current_file
 
 
 class MainApp(App):

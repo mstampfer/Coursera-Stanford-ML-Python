@@ -51,7 +51,7 @@ class MainScreen(BoxLayout):
     	self.add_widget(self.filebar())
     	
     def titlebar(self):
-    	layout=BoxLayout(spacing=10)
+    	layout=BoxLayout(padding='2sp',size_hint=(1,None),height='65sp')
     	layout.orientation='horizontal'
 
     	submit = Button(text='Submit',size_hint=(0.4,1))
@@ -103,7 +103,7 @@ class MainScreen(BoxLayout):
     def update_man():
     	pass
     def filebar(self):
-    	layout=BoxLayout()
+    	layout=BoxLayout(padding='2sp',size_hint=(1,None),height='100sp')
     	layout.orientation='horizontal'
     	files = self.element.files(self.current_ex)
     	for f in files:

@@ -16,6 +16,8 @@ class generate_elements():
 	def __init__(self, **args):
 		pass
 		
+	
+
 	def files(self,excercise):
 		path = 'res/'+excercise+'/filelist.txt'
 		#filelist = [c[:-3] for c in os.listdir(path) if c.endswith('.py')]
@@ -60,10 +62,13 @@ class MainScreen(BoxLayout):
     	run = Button(text='Run',size_hint=(0.4,1))
     	run.bind(on_press=self.run)
 
-    	title = Label(text=self.current_ex,size_hint=(1,1),font_size='35sp')
+    	ex_dropdown = Spinner(text='Welcome',size_hint=(1,1))
+    	ex_dropdown.values = os.listdir('./res/')
+
+    	#title = Label(text=self.current_ex,size_hint=(1,1),font_size='35sp')
 
     	layout.add_widget(run)
-    	layout.add_widget(title)
+    	layout.add_widget(ex_dropdown)
     	layout.add_widget(submit)
 
     	return layout

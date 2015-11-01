@@ -7,7 +7,8 @@ from kivy.uix.codeinput import CodeInput
 from kivy.uix.label import Label
 from kivy.uix.rst import RstDocument
 from kivy.uix.textinput import TextInput
-from kivy.metrics import dp
+#from kivy.metrics import dp
+from kivy.uix.spinner import Spinner
 
 
 class generate_elements():
@@ -68,7 +69,8 @@ class MainScreen(BoxLayout):
     
     def maineditor(self):
     	layout=BoxLayout()
-    	layout.orientation='horizontal'    	
+    	layout.orientation='horizontal'   
+    	#self.bind(self.current_ex=self.update_code) 	
     	man = self.element.manual(self.current_ex)
     	codeFile = self.element.readFile(self.current_ex,self.current_file)
     	code = CodeInput(text=codeFile.read())
@@ -95,7 +97,7 @@ class MainScreen(BoxLayout):
     def update_code(self,instance):
     	if instance.text.endswith('\n'):
     		instance.text=instance.text[:-1]
-    	self.current_file = instance.text
+    	self.current_file = instance.text    	
     	self.add_widget(self.maineditor())
     	print 'Current file changed to: ', self.current_file
 

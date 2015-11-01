@@ -10,6 +10,7 @@ from kivy.uix.textinput import TextInput
 #from kivy.metrics import dp
 from kivy.uix.spinner import Spinner
 from kivy.uix.splitter import Splitter
+from kivy.uix.popup import Popup
 
 
 class generate_elements():
@@ -56,8 +57,11 @@ class MainScreen(BoxLayout):
     	layout=BoxLayout(padding='2sp',size_hint=(1,None),height='65sp')
     	layout.orientation='horizontal'
 
+    	submit_popup = Popup(title='Enter credentials',content=Label(text='Hello world'),
+        size_hint=(0.5, 0.5))        
+
     	submit = Button(text='Submit',size_hint=(0.4,1))
-    	submit.bind(on_press=self.submission)
+    	submit.bind(on_press=submit_popup.open)
     	
     	run = Button(text='Run',size_hint=(0.4,1))
     	run.bind(on_press=self.run)

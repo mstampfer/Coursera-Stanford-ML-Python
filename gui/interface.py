@@ -2,12 +2,12 @@ import os
 import pypandoc
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivy.uix.codeinput import CodeInput
 from kivy.uix.label import Label
 from kivy.uix.rst import RstDocument
 from kivy.uix.textinput import TextInput
-#from kivy.metrics import dp
 from kivy.uix.spinner import Spinner
 from kivy.uix.splitter import Splitter
 from kivy.uix.popup import Popup
@@ -18,10 +18,20 @@ class generate_elements():
 		pass
 		
 	
+	def read_token(self,instance):
+		path = '../'+instance.current_ex+'/token.txt'
+		try:
+			credentials = open(path)
+			instance.email = credentials.readline()[:-1]
+			instance.token = credentials.readline()[:-1]
+			return True
+		except Exception, e:
+			return False
 
+			
+	
 	def files(self,excercise):
 		path = 'res/'+excercise+'/filelist.txt'
-		#filelist = [c[:-3] for c in os.listdir(path) if c.endswith('.py')]
 		filehandler = open(path)
 		filelist=[]
 		while True:
@@ -46,6 +56,11 @@ class MainScreen(BoxLayout):
         self.current_ex = 'ex1'
         self.current_file = 'warmUpExercise.py'
         self.element=generate_elements()
+        #popup = Popup(title='CourseraApp', content=Label(text='Hello World'),size_hint=(0.6, 0.35))
+        #popup.open()
+        #sleep(10)
+        #popup.dismiss()
+        
         self.draw_screen()
 
     def draw_screen(self):
@@ -57,11 +72,15 @@ class MainScreen(BoxLayout):
     	layout=BoxLayout(padding='2sp',size_hint=(1,None),height='65sp')
     	layout.orientation='horizontal'
 
-    	submit_popup = Popup(title='Enter credentials',content=Label(text='Hello world'),
-        size_hint=(0.5, 0.5))        
-
-    	submit = Button(text='Submit',size_hint=(0.4,1))
-    	submit.bind(on_press=submit_popup.open)
+    	#credentials = self.accept_credentials()
+    	self.submit_popup = Popup(title='Enter credentials',content=self.accept_credentials(),size_hint=(0.6, 0.35))        
+    	#credentials.children[1].bind(on_press=self.submit_popup.dismiss)
+    	
+    	submit = Button(text='Submit',size_hint=(0.4,1))    	
+    	if self.element.read_token(self):
+        	submit.bind(on_press=self.submit_assignment)
+        else:
+           	submit.bind(on_press=self.submit_popup.open)
     	
     	run = Button(text='Run',size_hint=(0.4,1))
     	run.bind(on_press=self.run)
@@ -70,14 +89,41 @@ class MainScreen(BoxLayout):
     	ex_dropdown.values = os.listdir('./res/')
     	ex_dropdown.bind(text=self.updateExercise)
 
-    	#title = Label(text=self.current_ex,size_hint=(1,1),font_size='35sp')
-
     	layout.add_widget(run)
     	layout.add_widget(ex_dropdown)
     	layout.add_widget(submit)
 
     	return layout
 
+
+    def accept_credentials(self):
+    	main_layout= BoxLayout(padding='2sp')
+    	main_layout.orientation='vertical'
+    	layout=GridLayout(padding='2sp',size_hint=(1,None))
+    	layout.cols=2
+    	layout.add_widget(Label(text='Email id:'))
+    	email = TextInput(multiline=False)
+    	email.bind(on_text_validate=self.update_email)
+    	layout.add_widget(email)
+    	token = TextInput(multiline=False)
+    	token.bind(on_text_validate=self.update_token)
+    	layout.add_widget(Label(text='Submission Token:'))
+    	layout.add_widget(token)
+    	main_layout.add_widget(layout)
+    	submit = Button(text='Submit')
+    	submit.bind(on_press=self.submit_assignment)
+    	main_layout.add_widget(submit)
+    	return main_layout
+   	
+    def update_email(self,instance):
+    	self.email=instance.text
+    def update_token(self,instance):
+    	self.token=instance.text
+
+    def submit_assignment(self,instance):
+    	print 'Email',self.email
+    	print 'Token', self.token
+    	self.submit_popup.dismiss()
 
     def updateExercise(self,spinner,text):
     	self.current_ex=text
@@ -87,7 +133,6 @@ class MainScreen(BoxLayout):
     	self.current_file= current_file
     	self.clear_widgets()
     	self.draw_screen()
-    	print('The spinner', spinner, 'have text', text)
     	print 'Current file changed to: ', self.current_ex
 
 
@@ -153,5 +198,5 @@ class CourseraApp(App):
     	return True
 
 
-if __name__ == '__main__':
-    CourseraApp().run()
+if __name__ == '__main__':	
+	CourseraApp().run()

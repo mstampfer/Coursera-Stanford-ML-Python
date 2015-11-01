@@ -1,8 +1,11 @@
 import os
+import pypandoc
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
+from kivy.uix.codeinput import CodeInput
 from kivy.uix.label import Label
+from kivy.uix.rst import RstDocument
 from kivy.uix.textinput import TextInput
 
 
@@ -19,13 +22,22 @@ class generate_elements():
 		# 	files.append(open(path+'/'+ex))
 		return filelist
 	def manual(self, excercise):
-		pass
+		path = 'res/'+excercise+'/manual.md'
+		return pypandoc.convert(path,'rst')
+
+	def readFile(self,excercise,filename):
+		path = '../'+excercise+'/'+filename
+		f=open(path,'rw')
+		return f
 		
 class MainScreen(BoxLayout):
 
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         self.orientation='vertical'
+        self.current_ex = 'ex1'
+        self.current_file = 'warmUpExercise.py'
+        self.element=generate_elements()
         self.add_widget(self.titlebar())
         self.add_widget(self.maineditor())
         self.add_widget(self.filebar())
@@ -49,15 +61,16 @@ class MainScreen(BoxLayout):
     def maineditor(self):
     	layout=BoxLayout()
     	layout.orientation='horizontal'
-    	layout.add_widget(Label(text='Code Editor'))
-    	layout.add_widget(Label(text='Instructions'))
+    	man = self.element.manual(self.current_ex)
+    	code = self.element.readFile(self.current_ex,self.current_file)
+    	layout.add_widget(CodeInput(text=code.read()))
+    	layout.add_widget(RstDocument(text=man))
     	return layout
 
     def filebar(self,excercise='ex1'):
     	layout=BoxLayout()
     	layout.orientation='horizontal'
-    	element=generate_elements()
-    	files = element.files(excercise)
+    	files = self.element.files(excercise)
     	for f in files:
     		layout.add_widget(Label(text=f))
     	

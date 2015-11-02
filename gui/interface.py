@@ -13,6 +13,7 @@ from kivy.uix.splitter import Splitter
 from kivy.uix.popup import Popup
 from kivy.clock import Clock
 from functools import partial
+from kivy.animation import Animation
 
 
 class generate_elements():
@@ -45,10 +46,15 @@ class generate_elements():
 		path = 'res/'+excercise+'/manual.md'
 		return pypandoc.convert(path,'rst')
 
+	def writeFile(self,excercise,filename):
+		path = '../'+excercise+'/'+filename
+		f=open(path,'w')
+		return f
+		
 	def readFile(self,excercise,filename):
 		path = '../'+excercise+'/'+filename
-		f=open(path,'rw')
-		return f
+		f=open(path,'r')
+		return f.read()
 		
 class MainScreen(BoxLayout):
 
@@ -65,6 +71,7 @@ class MainScreen(BoxLayout):
         
         self.draw_screen()
 
+
     def draw_screen(self):
     	self.add_widget(self.titlebar())
     	self.add_widget(self.maineditor())
@@ -80,7 +87,7 @@ class MainScreen(BoxLayout):
     	
     	submit = Button(text='Submit',size_hint=(0.4,1))    	
     	if self.element.read_token(self):
-        	submit.bind(on_press=self.submit_assignment)
+        	submit.bind(on_press=partial(self.submit_assignment))
         else:
            	submit.bind(on_press=self.submit_popup.open)
     	
@@ -105,27 +112,28 @@ class MainScreen(BoxLayout):
     	layout.cols=2
     	layout.add_widget(Label(text='Email id:'))
     	email = TextInput(multiline=False)
-    	email.bind(on_text_validate=self.update_email)
     	layout.add_widget(email)
     	token = TextInput(multiline=False)
-    	token.bind(on_text_validate=self.update_token)
     	layout.add_widget(Label(text='Submission Token:'))
     	layout.add_widget(token)
     	main_layout.add_widget(layout)
     	submit = Button(text='Submit')
-    	submit.bind(on_press=self.submit_assignment)
+    	submit.bind(on_press=partial(self.submit_assignment,email,token))
     	main_layout.add_widget(submit)
     	return main_layout
    	
-    def update_email(self,instance):
-    	self.email=instance.text
-    def update_token(self,instance):
-    	self.token=instance.text
+    def submit_assignment(self,*largs):
+        if len(largs)>1:
+    		email = largs[0].text
+    		token = largs[1].text
+    	else:
+    		email=self.email
+    		token=self.token    		
 
-    def submit_assignment(self,instance):
-    	print 'Email',self.email
-    	print 'Token', self.token
+    	print 'Email',email
+    	print 'Token', token
     	self.submit_popup.dismiss()
+    	#TODO:submission call
 
     def updateExercise(self,spinner,text):
     	self.current_ex=text
@@ -140,6 +148,7 @@ class MainScreen(BoxLayout):
 
 
     def run(self,instance):
+    	#TODO: Display output in popup
     	print('The button <%s> is being pressed' % instance.text)
 
     
@@ -154,7 +163,7 @@ class MainScreen(BoxLayout):
     	#self.bind(self.current_ex=self.update_currentFile) 	
     	man = self.element.manual(self.current_ex)
     	codeFile = self.element.readFile(self.current_ex,self.current_file)
-    	code = CodeInput(text=codeFile.read())
+    	code = CodeInput(text=codeFile)
     	code.bind(focus =self.schedule_reload)
     	splitter = Splitter()
     	if layout.orientation == 'vertical':
@@ -168,17 +177,27 @@ class MainScreen(BoxLayout):
     	return layout
 
     def updateAssignment(self,assignment,*largs):
-    	filehandler = self.element.readFile(self.current_ex,self.current_file)
-    	filehandler.write(assignment.text)
+    	try:
+    		if not self.element.readFile(self.current_ex,self.current_file)==assignment.text:
+    			filehandler = self.element.writeFile(self.current_ex,self.current_file)
+    			filehandler.write(assignment.text)
+		    	#print 'INFO: Autosaved'
+    	except Exception, e:
+    		raise e
+    		#self.show_error(e)
+
 
     def schedule_reload(self,instance,value):
+        self.callback = partial(self.updateAssignment,instance)
         if value:
         	#Schedule Update
-        	Clock.schedule_interval(partial(self.updateAssignment,instance),5)
+        	Clock.schedule_interval(self.callback,5)
         else:
-        	Clock.unschedule(partial(self.updateAssignment,instance))
+        	#TODO:Unsceduling not working properly. Autosave feature cannot be turned off automatically
+        	Clock.unschedule(self.callback)
         	self.updateAssignment(instance)
         	#Update now
+            
     
     def filebar(self):
     	layout=BoxLayout(padding='2sp',size_hint=(1,None),height='100sp')
@@ -199,6 +218,16 @@ class MainScreen(BoxLayout):
     	self.clear_widgets()
     	self.draw_screen()
     	print 'Current file changed to: ', self.current_file
+
+    def show_error(self, e):
+    	print 'Error',str(e)
+        info_label = Label(text=str(e))
+        #self.anim = Animation(top=190.0, opacity=1, d=2) +\
+        #    Animation(top=190.0, d=3) +\
+        #    Animation(top=0, opacity=0, d=2)
+        anim = Animation(x=10,y=10)
+        anim.start(info_label)
+
 
 
 class CourseraApp(App):

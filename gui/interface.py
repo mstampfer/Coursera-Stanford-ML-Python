@@ -11,6 +11,8 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.spinner import Spinner
 from kivy.uix.splitter import Splitter
 from kivy.uix.popup import Popup
+from kivy.clock import Clock
+from functools import partial
 
 
 class generate_elements():
@@ -133,13 +135,11 @@ class MainScreen(BoxLayout):
     	self.current_file= current_file
     	self.clear_widgets()
     	self.draw_screen()
-    	print 'Current file changed to: ', self.current_ex
+    	print 'Current Exercise changed to: ', self.current_ex
 
 
 
     def run(self,instance):
-    	print('The button <%s> is being pressed' % instance.text)
-    def submission(self,instance):
     	print('The button <%s> is being pressed' % instance.text)
 
     
@@ -155,6 +155,7 @@ class MainScreen(BoxLayout):
     	man = self.element.manual(self.current_ex)
     	codeFile = self.element.readFile(self.current_ex,self.current_file)
     	code = CodeInput(text=codeFile.read())
+    	code.bind(focus =self.schedule_reload)
     	splitter = Splitter()
     	if layout.orientation == 'vertical':
     		splitter.sizable_from='bottom'
@@ -166,8 +167,18 @@ class MainScreen(BoxLayout):
     	layout.add_widget(RstDocument(text=man))
     	return layout
 
-    
-    	
+    def updateAssignment(self,assignment,*largs):
+    	filehandler = self.element.readFile(self.current_ex,self.current_file)
+    	filehandler.write(assignment.text)
+
+    def schedule_reload(self,instance,value):
+        if value:
+        	#Schedule Update
+        	Clock.schedule_interval(partial(self.updateAssignment,instance),5)
+        else:
+        	Clock.unschedule(partial(self.updateAssignment,instance))
+        	self.updateAssignment(instance)
+        	#Update now
     
     def filebar(self):
     	layout=BoxLayout(padding='2sp',size_hint=(1,None),height='100sp')

@@ -122,7 +122,7 @@ class MainScreen(BoxLayout):
     def accept_credentials(self):
     	main_layout= BoxLayout(padding='2sp')
     	main_layout.orientation='vertical'
-    	layout=GridLayout(padding='2sp',size_hint=(1,None))
+    	layout=GridLayout(padding='2sp')
     	layout.cols=2
     	layout.add_widget(Label(text='Email id:'))
     	email = TextInput(multiline=False)
@@ -131,7 +131,7 @@ class MainScreen(BoxLayout):
     	layout.add_widget(Label(text='Submission Token:'))
     	layout.add_widget(token)
     	main_layout.add_widget(layout)
-    	submit = Button(text='Submit')
+    	submit = Button(text='Submit',size_hint=(1,0.4))
     	submit.bind(on_press=partial(self.submit_assignment,email,token))
     	main_layout.add_widget(submit)
     	return main_layout
@@ -209,7 +209,7 @@ class MainScreen(BoxLayout):
    	        self.callback = partial(self.saveAssignment,instance)
         	Clock.schedule_interval(self.callback,5)
         else:
-        	#When clicking on another file, both focus=False and button bound callbacks are executed simultaneously
+        	#When clicking on another file, both focus=False and filebar button callbacks are executed simultaneously leading to deadlock
         	Clock.unschedule(self.callback)
         	#self.saveAssignment(instance)
         	#Update now

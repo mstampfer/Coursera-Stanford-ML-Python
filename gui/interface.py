@@ -3,6 +3,7 @@ import pypandoc
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.uix.codeinput import CodeInput
 from kivy.uix.label import Label
@@ -77,6 +78,7 @@ class MainScreen(BoxLayout):
     	self.add_widget(self.titlebar())
     	self.add_widget(self.maineditor())
     	self.add_widget(self.filebar())
+    	self.add_widget(self.console())
     	
     def titlebar(self):
     	layout=BoxLayout(padding='2sp',size_hint=(1,None),height='65sp')
@@ -103,6 +105,17 @@ class MainScreen(BoxLayout):
     	layout.add_widget(ex_dropdown)
     	layout.add_widget(submit)
 
+    	return layout
+
+
+    def console(self):
+    	layout = FloatLayout(size_hint=(1,None),height=100)
+    	self.info_label = TextInput(size_hint=(1,None),readonly=True,background_color=(0,0,0,1),foreground_color=(1,1,1,1),opacity=0)
+    	self.info_label.text_size = self.size
+    	self.info_label.text = 'console'
+    	self.info_label.height = '150pt'
+    	self.info_label.top = 0
+    	layout.add_widget(self.info_label)
     	return layout
 
 
@@ -150,12 +163,13 @@ class MainScreen(BoxLayout):
 
     def run(self,instance):
     	#TODO: Display output in popup
+    	self.show_error('Cannot be run')
     	print('The button <%s> is being pressed' % instance.text)
 
     
     def maineditor(self):
     	layout=BoxLayout()
-    	#reactive layout not working
+    	#TODO:reactive layout not working
 
     	if self.width < self.height:
     		layout.orientation='vertical'   
@@ -177,7 +191,7 @@ class MainScreen(BoxLayout):
     	layout.add_widget(RstDocument(text=man))
     	return layout
 
-    def updateAssignment(self,assignment,*largs):
+    def saveAssignment(self,assignment,*largs):
     	print 'callback called'
     	try:
     		if not self.element.readFile(self.current_ex,self.current_file)==assignment.text:
@@ -192,12 +206,12 @@ class MainScreen(BoxLayout):
     def schedule_reload(self,instance,value):
         if value:
         	#Schedule Update
-   	        self.callback = partial(self.updateAssignment,instance)
+   	        self.callback = partial(self.saveAssignment,instance)
         	Clock.schedule_interval(self.callback,5)
         else:
         	#When clicking on another file, both focus=False and button bound callbacks are executed simultaneously
         	Clock.unschedule(self.callback)
-        	#self.updateAssignment(instance)
+        	#self.saveAssignment(instance)
         	#Update now
             
     
@@ -222,13 +236,11 @@ class MainScreen(BoxLayout):
     	print 'Current file changed to: ', self.current_file
 
     def show_error(self, e):
-    	print 'Error',str(e)
-        info_label = Label(text=str(e))
-        #self.anim = Animation(top=190.0, opacity=1, d=2) +\
-        #    Animation(top=190.0, d=3) +\
-        #    Animation(top=0, opacity=0, d=2)
-        anim = Animation(x=10,y=10)
-        anim.start(info_label)
+        self.info_label.text = str(e)
+        anim = Animation(top=190.0, opacity=1, d=2) +\
+            Animation(top=190.0, d=3) +\
+            Animation(top=0, opacity=0, d=2)        
+        anim.start(self.info_label)
 
 
 

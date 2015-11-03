@@ -54,8 +54,6 @@ class generate_elements():
 		return f
 		
 	def readFile(self,excercise,filename):
-		print excercise
-		print filename
 		path = '../'+excercise+'/'+filename
 		#print 'Opening ',path
 		f=open(path,'r')
@@ -157,7 +155,8 @@ class MainScreen(BoxLayout):
     def updateExercise(self,spinner,text):
     	self.current_ex=text
     	current_file = self.element.files(self.current_ex)[0]
-    	current_file=current_file.split()
+    	if current_file.endswith('\n'):
+    		current_file=current_file[:-1]
     	self.current_file= current_file
     	self.clear_widgets()
     	self.draw_screen()
@@ -232,7 +231,8 @@ class MainScreen(BoxLayout):
 
     #Use bind to see how it works
     def update_currentFile(self,instance):
-    	instance.text=instance.text.split()
+    	if instance.text.endswith('\n'):
+    		instance.text=instance.text[:-1]
     	self.current_file = instance.text    	
     	self.clear_widgets()
     	self.draw_screen()

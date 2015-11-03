@@ -27,8 +27,8 @@ class generate_elements():
 		path = '../'+instance.current_ex+'/token.txt'
 		try:
 			credentials = open(path)
-			instance.email = credentials.readline().split()
-			instance.token = credentials.readline().split()
+			instance.email = credentials.readline().split()[0]
+			instance.token = credentials.readline().split()[0]
 			return True
 		except Exception, e:
 			return False
@@ -155,8 +155,7 @@ class MainScreen(BoxLayout):
     def updateExercise(self,spinner,text):
     	self.current_ex=text
     	current_file = self.element.files(self.current_ex)[0]
-    	if current_file.endswith('\n'):
-    		current_file=current_file[:-1]
+    	current_file=current_file.split()[0]
     	self.current_file= current_file
     	self.clear_widgets()
     	self.draw_screen()
@@ -231,8 +230,7 @@ class MainScreen(BoxLayout):
 
     #Use bind to see how it works
     def update_currentFile(self,instance):
-    	if instance.text.endswith('\n'):
-    		instance.text=instance.text[:-1]
+    	instance.text=instance.text.split()[0]
     	self.current_file = instance.text    	
     	self.clear_widgets()
     	self.draw_screen()

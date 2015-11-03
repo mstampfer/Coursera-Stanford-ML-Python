@@ -15,6 +15,7 @@ from kivy.uix.popup import Popup
 from kivy.clock import Clock
 from functools import partial
 from kivy.animation import Animation
+from Submission import Submission
 
 
 class generate_elements():
@@ -26,8 +27,8 @@ class generate_elements():
 		path = '../'+instance.current_ex+'/token.txt'
 		try:
 			credentials = open(path)
-			instance.email = credentials.readline()[:-1]
-			instance.token = credentials.readline()[:-1]
+			instance.email = credentials.readline().split()
+			instance.token = credentials.readline().split()
 			return True
 		except Exception, e:
 			return False
@@ -53,6 +54,8 @@ class generate_elements():
 		return f
 		
 	def readFile(self,excercise,filename):
+		print excercise
+		print filename
 		path = '../'+excercise+'/'+filename
 		#print 'Opening ',path
 		f=open(path,'r')
@@ -65,6 +68,7 @@ class MainScreen(BoxLayout):
         self.orientation='vertical'
         self.current_ex = 'ex1'
         self.current_file = 'warmUpExercise.py'
+        self.submit_ob = Submission()
         self.element=generate_elements()
         #popup = Popup(title='CourseraApp', content=Label(text='Hello World'),size_hint=(0.6, 0.35))
         #popup.open()
@@ -138,22 +142,22 @@ class MainScreen(BoxLayout):
    	
     def submit_assignment(self,*largs):
         if len(largs)>1:
-    		email = largs[0].text
-    		token = largs[1].text
+    		self.submit_ob.__login = largs[0].text
+    		self.submit_ob.__password = largs[1].text
     	else:
-    		email=self.email
-    		token=self.token    		
+    		self.submit_ob.__login=self.email
+    		self.submit_ob.__password=self.token    		
 
-    	print 'Email',email
-    	print 'Token', token
+    	print 'Email',self.submit_ob.__login
+    	print 'Token', self.submit_ob.__password
     	self.submit_popup.dismiss()
     	#TODO:submission call
+
 
     def updateExercise(self,spinner,text):
     	self.current_ex=text
     	current_file = self.element.files(self.current_ex)[0]
-    	if current_file.endswith('\n'):
-    		current_file=current_file[:-1]
+    	current_file=current_file.split()
     	self.current_file= current_file
     	self.clear_widgets()
     	self.draw_screen()
@@ -228,8 +232,7 @@ class MainScreen(BoxLayout):
 
     #Use bind to see how it works
     def update_currentFile(self,instance):
-    	if instance.text.endswith('\n'):
-    		instance.text=instance.text[:-1]
+    	instance.text=instance.text.split()
     	self.current_file = instance.text    	
     	self.clear_widgets()
     	self.draw_screen()

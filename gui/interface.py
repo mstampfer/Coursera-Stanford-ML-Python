@@ -18,7 +18,7 @@ from kivy.animation import Animation
 from Submission import Submission
 
 
-class generate_elements():
+class resourceHandler():
 	def __init__(self, **args):
 		pass
 		
@@ -67,7 +67,7 @@ class MainScreen(BoxLayout):
         self.current_ex = 'ex1'
         self.current_file = 'warmUpExercise.py'
         self.submit_ob = Submission()
-        self.element=generate_elements()
+        self.element=resourceHandler()
         #popup = Popup(title='CourseraApp', content=Label(text='Hello World'),size_hint=(0.6, 0.35))
         #popup.open()
         #sleep(10)
@@ -99,7 +99,7 @@ class MainScreen(BoxLayout):
     	run = Button(text='Run',size_hint=(0.4,1))
     	run.bind(on_press=self.run)
 
-    	ex_dropdown = Spinner(text='Select Exercise',size_hint=(1,1))
+    	ex_dropdown = Spinner(text=self.current_ex,size_hint=(1,1))
     	ex_dropdown.values = os.listdir('./res/')
     	ex_dropdown.bind(text=self.updateExercise)
 
@@ -203,7 +203,7 @@ class MainScreen(BoxLayout):
 		    	print 'INFO: Autosaved file'
     	except Exception, e:
     		raise e
-    		#self.show_error(e)
+    		self.show_error(e)
 
 
     def schedule_reload(self,instance,value):
@@ -212,7 +212,7 @@ class MainScreen(BoxLayout):
    	        self.callback = partial(self.saveAssignment,instance)
         	Clock.schedule_interval(self.callback,5)
         else:
-        	#When clicking on another file, both focus=False and filebar button callbacks are executed simultaneously leading to deadlock
+        	#TODO:When clicking on another file, both focus=False and filebar button callbacks are executed simultaneously leading to deadlock
         	Clock.unschedule(self.callback)
         	#self.saveAssignment(instance)
         	#Update now

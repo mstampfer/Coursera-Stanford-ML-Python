@@ -53,6 +53,7 @@ class generate_elements():
 		
 	def readFile(self,excercise,filename):
 		path = '../'+excercise+'/'+filename
+		#print 'Opening ',path
 		f=open(path,'r')
 		return f.read()
 		
@@ -177,25 +178,26 @@ class MainScreen(BoxLayout):
     	return layout
 
     def updateAssignment(self,assignment,*largs):
+    	print 'callback called'
     	try:
     		if not self.element.readFile(self.current_ex,self.current_file)==assignment.text:
     			filehandler = self.element.writeFile(self.current_ex,self.current_file)
     			filehandler.write(assignment.text)
-		    	#print 'INFO: Autosaved'
+		    	print 'INFO: Autosaved file'
     	except Exception, e:
     		raise e
     		#self.show_error(e)
 
 
     def schedule_reload(self,instance,value):
-        self.callback = partial(self.updateAssignment,instance)
         if value:
         	#Schedule Update
+   	        self.callback = partial(self.updateAssignment,instance)
         	Clock.schedule_interval(self.callback,5)
         else:
-        	#TODO:Unsceduling not working properly. Autosave feature cannot be turned off automatically
+        	#When clicking on another file, both focus=False and button bound callbacks are executed simultaneously
         	Clock.unschedule(self.callback)
-        	self.updateAssignment(instance)
+        	#self.updateAssignment(instance)
         	#Update now
             
     

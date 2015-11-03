@@ -36,7 +36,7 @@ class resourceHandler():
 			
 	
 	def files(self,excercise):
-		path = 'res/'+excercise+'/filelist.txt'
+		path = 'res/'+excercise+'/sources.txt'
 		filehandler = open(path)
 		filelist=[]
 		while True:

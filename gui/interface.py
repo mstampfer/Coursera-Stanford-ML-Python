@@ -27,8 +27,8 @@ class resourceHandler():
 		path = '../'+instance.current_ex+'/token.txt'
 		try:
 			credentials = open(path)
-			instance.email = credentials.readline().split()[0]
-			instance.token = credentials.readline().split()[0]
+			instance.email = credentials.readline().strip()
+			instance.token = credentials.readline().strip()
 			return True
 		except Exception, e:
 			return False
@@ -150,6 +150,7 @@ class MainScreen(BoxLayout):
     	print 'Token', self.submit_ob.__password
     	self.submit_popup.dismiss()
     	#TODO:submission call
+    	#self.show_error(self.submit_ob.submit())
 
 
     def updateExercise(self,spinner,text):
@@ -166,7 +167,7 @@ class MainScreen(BoxLayout):
 
     def run(self,instance):
     	#TODO: Display output in popup
-    	self.show_error('Cannot be run')
+    	self.show_error('Cannot run')
     	print('The button <%s> is being pressed' % instance.text)
 
     
@@ -240,8 +241,9 @@ class MainScreen(BoxLayout):
 
     def show_error(self, e):
         self.info_label.text = str(e)
-        anim = Animation(top=190.0, opacity=1, d=2) +\
-            Animation(top=190.0, d=3) +\
+        duration = len(self.info_label.text)/10
+        anim = Animation(top=190.0, opacity=1, d=0.5) +\
+            Animation(top=190.0, d=duration) +\
             Animation(top=0, opacity=0, d=2)        
         anim.start(self.info_label)
 

@@ -74,11 +74,10 @@ class MainScreen(BoxLayout):
         #popup.open()
         #sleep(10)
         #popup.dismiss()
-        
-        self.draw_screen()
-
-
-    def draw_screen(self):
+        self.bind(size=self.draw_screen)
+  
+    def draw_screen(self,*args):
+        self.clear_widgets()
     	self.add_widget(self.titlebar())
     	self.add_widget(self.maineditor())
         scrollbar = ScrollView(size_hint=(1,None))
@@ -166,7 +165,6 @@ class MainScreen(BoxLayout):
     	if current_file.endswith('\n'):
     		current_file=current_file[:-1]
     	self.current_file= current_file
-    	self.clear_widgets()
     	self.draw_screen()
     	print 'Current Exercise changed to: ', self.current_ex
 
@@ -178,10 +176,11 @@ class MainScreen(BoxLayout):
     	print('The button <%s> is being pressed' % instance.text)
 
     
+   
+        
     def maineditor(self):
     	layout=BoxLayout()
     	#TODO:reactive layout not working
-
     	if self.width < self.height:
     		layout.orientation='vertical'   
     	else:
@@ -243,7 +242,6 @@ class MainScreen(BoxLayout):
     	if instance.text.endswith('\n'):
     		instance.text=instance.text[:-1]
     	self.current_file = instance.text    	
-    	self.clear_widgets()
     	self.draw_screen()
     	print 'Current file changed to: ', self.current_file
 

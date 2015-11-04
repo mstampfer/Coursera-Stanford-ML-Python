@@ -231,10 +231,12 @@ class MainScreen(BoxLayout):
     	layout.orientation='horizontal'
     	files = self.element.files(self.current_ex)
     	for f in files:
-            button = ToggleButton(text=f,group = self.current_ex,state='normal')
+            if f.strip() == self.current_file:
+                button = ToggleButton(text=f,group = self.current_ex,state='down')
+            else:
+                button = ToggleButton(text=f,group = self.current_ex,state='normal')
             button.bind(on_press=self.update_currentFile)
             layout.add_widget(button)
-    	#TODO: Make file button toggle-able
     	return layout
 
     def update_currentFile(self,instance):

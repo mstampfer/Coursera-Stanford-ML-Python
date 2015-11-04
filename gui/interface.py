@@ -63,19 +63,26 @@ class resourceHandler():
 		
 class MainScreen(BoxLayout):
 
-    def __init__(self, **kwargs):
+    def __init__(self, welcome=False, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         self.orientation='vertical'
         self.current_ex = 'ex1'
         self.current_file = 'warmUpExercise.py'
         self.submit_ob = Submission()
         self.element=resourceHandler()
-        #popup = Popup(title='CourseraApp', content=Label(text='Hello World'),size_hint=(0.6, 0.35))
-        #popup.open()
-        #sleep(10)
-        #popup.dismiss()
-        self.bind(size=self.draw_screen)
+
+        if welcome:
+            welcome_popup = Popup(title='Coursera ML in Python', content=Label(text='Hello World'),size_hint=(1, 1))
+            self.add_widget(welcome_popup)
+            welcome_popup.open()
+            Clock.schedule_once(self.start_app,3)
+        else:
+            self.bind(size=self.draw_screen)
   
+    def start_app(self,*args):
+        self.draw_screen()
+        self.bind(size=self.draw_screen)
+
     def draw_screen(self,*args):
         self.clear_widgets()
     	self.add_widget(self.titlebar())
@@ -180,7 +187,6 @@ class MainScreen(BoxLayout):
         
     def maineditor(self):
     	layout=BoxLayout()
-    	#TODO:reactive layout not working
     	if self.width < self.height:
     		layout.orientation='vertical'   
     	else:
@@ -258,7 +264,7 @@ class MainScreen(BoxLayout):
 class CourseraApp(App):
 
     def build(self):
-    	return MainScreen()
+    	return MainScreen(welcome=True)
     def on_pause(self):
     	return True
 

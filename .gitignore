@@ -4,4 +4,4 @@ iterate.dat
 .DS_Store
 *~
 token.txt
-.git_
+.ipynb*

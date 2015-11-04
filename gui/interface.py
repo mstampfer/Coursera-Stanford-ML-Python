@@ -10,7 +10,9 @@ from kivy.uix.label import Label
 from kivy.uix.rst import RstDocument
 from kivy.uix.textinput import TextInput
 from kivy.uix.spinner import Spinner
+from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.splitter import Splitter
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.popup import Popup
 from kivy.clock import Clock
 from functools import partial
@@ -79,7 +81,11 @@ class MainScreen(BoxLayout):
     def draw_screen(self):
     	self.add_widget(self.titlebar())
     	self.add_widget(self.maineditor())
-    	self.add_widget(self.filebar())
+        scrollbar = ScrollView(size_hint=(1,None))
+        #TODO: Make filebar scrollable for smaller screens and many files
+        #scrollbar.add_widget(self.filebar())
+    	#self.add_widget(scrollbar)
+        self.add_widget(self.filebar())
     	self.add_widget(self.console())
     	
     def titlebar(self):
@@ -139,6 +145,7 @@ class MainScreen(BoxLayout):
     	return main_layout
    	
     def submit_assignment(self,*largs):
+        #Make submit_ob local if not used anywhere else 
         if len(largs)>1:
     		self.submit_ob.__login = largs[0].text
     		self.submit_ob.__password = largs[1].text
@@ -224,13 +231,12 @@ class MainScreen(BoxLayout):
     	layout.orientation='horizontal'
     	files = self.element.files(self.current_ex)
     	for f in files:
-    		button = Button(text=f)
-    		button.bind(on_press=self.update_currentFile)
-    		layout.add_widget(button)
-    	
+            button = ToggleButton(text=f,group = self.current_ex,state='normal')
+            button.bind(on_press=self.update_currentFile)
+            layout.add_widget(button)
+    	#TODO: Make file button toggle-able
     	return layout
 
-    #Use bind to see how it works
     def update_currentFile(self,instance):
     	if instance.text.endswith('\n'):
     		instance.text=instance.text[:-1]

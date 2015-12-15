@@ -13,8 +13,6 @@ def polyFeatures(X, p):
 #               column of X contains the values of X to the p-th power.
 #
 # 
-    for i in range(1, p+1):
-        X_poly[:, i-1] = X**i
 
 # =========================================================================
 

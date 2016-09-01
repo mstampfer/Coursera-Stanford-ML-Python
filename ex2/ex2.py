@@ -28,6 +28,10 @@ from show import show
 #     predict.py
 #     costFunctionReg.py
 #     gradientFunctionReg.py
+#     n.b. This files differ in number from the Octave version of ex2.
+#          This is due to the scipy optimization taking only scalar
+#          functions where fmiunc in Octave takes functions returning
+#          multiple values.
 #
 #  For this exercise, you will not need to change any code in this file,
 #  or any other files other than those mentioned above.

@@ -4,4 +4,8 @@ iterate.dat
 .DS_Store
 *~
 token.txt
-.ipynb*
+.git_
+.git_save
+\#*
+token.txt_
+.ipynb_checkpoints

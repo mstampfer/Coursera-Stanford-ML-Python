@@ -52,5 +52,9 @@ def output(part_id):
         return sprintf('%d', x)
 
 s = Submission(homework, part_names, srcs, output)
-s.submit()
-
+try:
+    s.submit()
+except Exception as ex:
+    template = "An exception of type {0} occured. Messsage:\n{1!r}"
+    message = template.format(type(ex).__name__, ex.args)
+    print message
